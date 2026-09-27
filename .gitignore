@@ -1,0 +1,14 @@
+# Assignment handout (copyrighted, not for redistribution)
+COSC 520*.pdf
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+
+# Editors / OS
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store
