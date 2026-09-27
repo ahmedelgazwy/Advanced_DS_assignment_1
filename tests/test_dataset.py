@@ -81,8 +81,10 @@ def test_make_queries_mix_and_labels(logins, absent_logins):
 
 
 def test_make_queries_edge_ratios_and_errors(logins, absent_logins):
-    assert all(is_member for _, is_member in make_queries(logins, absent_logins, 50, hit_ratio=1.0))
-    assert not any(is_member for _, is_member in make_queries(logins, absent_logins, 50, hit_ratio=0.0))
+    only_hits = make_queries(logins, absent_logins, 50, hit_ratio=1.0)
+    only_misses = make_queries(logins, absent_logins, 50, hit_ratio=0.0)
+    assert all(is_member for _, is_member in only_hits)
+    assert not any(is_member for _, is_member in only_misses)
     with pytest.raises(ValueError):
         make_queries(logins, absent_logins[:10], count=100, hit_ratio=0.5)
     with pytest.raises(ValueError):

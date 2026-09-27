@@ -100,7 +100,9 @@ class CuckooFilter(LoginChecker):
             raise ValueError("fp_rate must be in (0, 1) and max_load in (0, 1]")
         self._fingerprint_bits = max(1, fingerprint_bits_for(fp_rate, bucket_size))
         if self._fingerprint_bits > MAX_FINGERPRINT_BITS:
-            raise ValueError(f"fp_rate too small: needs more than {MAX_FINGERPRINT_BITS}-bit fingerprints")
+            raise ValueError(
+                f"fp_rate too small: needs more than {MAX_FINGERPRINT_BITS}-bit fingerprints"
+            )
         self._fingerprint_mask = (1 << self._fingerprint_bits) - 1
         self._bucket_size = bucket_size
         self._num_buckets = math.ceil(capacity / (bucket_size * max_load))

@@ -30,10 +30,12 @@ only library primitive is the BLAKE2b hash *function* from Python's standard
 │   ├── bloom_filter.py     #   BloomFilter (bit array, double hashing)
 │   ├── cuckoo_filter.py    #   CuckooFilter (4-slot buckets, fingerprints, victim stash)
 │   ├── hashing.py          #   BLAKE2b-based hash helpers (hash64, hash_pair, mix64)
-│   └── dataset.py          #   synthetic login generator, query mix, file I/O
+│   ├── dataset.py          #   synthetic login generator, query mix, file I/O
+│   └── experiment.py       #   shared timing helpers and table formatting
+├── demo.py                 # live comparison of the five structures
 ├── scripts/
 │   └── generate_dataset.py # CLI: writes data/*.txt.gz and data/manifest.json
-├── tests/                  # pytest suite (107 tests, about 1 s)
+├── tests/                  # pytest suite (114 tests, about 2 s)
 ├── data/                   # dataset folder (large files downloaded or generated)
 ├── docs/
 │   └── theory.md           # complexity analysis, formulas, references
@@ -62,13 +64,51 @@ pip install -r requirements.txt
 No installation of the package itself is needed; every command is run from
 the repository root.
 
+## Demo
+
+```bash
+python demo.py                              # 100,000 logins, built-in examples (~2 s)
+python demo.py --n 1000000                  # a bigger dataset (~15 s)
+python demo.py --check alice fnaf0000001    # check your own logins
+python demo.py --interactive                # type logins to sign up
+```
+
+The demo reads logins from `data/logins_10000000.txt.gz` when the file exists
+and otherwise generates the same logins in memory. It then does four things:
+
+1. builds all five structures and compares build time, memory, lookup time and false-positive rate;
+2. checks example logins, including a real false positive found for each filter;
+3. runs the sign-up flow (`register` accepts a free name once and rejects the repeat);
+4. deletes an account, showing that the hash table and cuckoo filter can remove a login but a Bloom filter cannot.
+
+Example output (Intel i7-11800H, Python 3.10):
+
+```
+1. Building the five structures
+Structure      Build (s)  Memory (MB)  Bytes/login  Lookup (us)  False positives
+-------------  ---------  -----------  -----------  -----------  ---------------
+Linear search  0.00       7.10         71.0         1,406.51     none (exact)
+Binary search  0.02       7.10         71.0         2.08         none (exact)
+Hash table     0.34       14.55        145.5        1.16         none (exact)
+Bloom filter   0.28       0.12         1.2          2.04         1.03%
+Cuckoo filter  0.22       0.23         2.3          2.13         0.72%
+
+2. Is this login taken?
+Login               Linear search  Binary search  Hash table  Bloom filter  Cuckoo filter  Note
+------------------  -------------  -------------  ----------  ------------  -------------  ----------------------------------------------
+'ahftrxck0000000'   taken          taken          taken       taken         taken          stored
+'sdmri000000'       free           free           free        free          free           never registered
+'tasoxbahzi00002j'  free           free           free        taken         free           never registered: Bloom filter false positive
+'zfapi00001r'       free           free           free        free          taken          never registered: Cuckoo filter false positive
+```
+
 ## Running the tests
 
 ```bash
 python -m pytest
 ```
 
-The suite runs in about a second and needs no dataset files.
+The suite runs in about two seconds and needs no dataset files.
 
 | File | What it checks |
 |---|---|
@@ -79,6 +119,7 @@ The suite runs in about a second and needs no dataset files.
 | `tests/test_cuckoo_filter.py` | `f` formula, table sizing, alternate bucket is an involution, FP bound, removal, full-filter behaviour and victim stash, duplicate limit |
 | `tests/test_hashing.py` | determinism, agreement with BLAKE2b, 64-bit range, even spread |
 | `tests/test_dataset.py` | uniqueness, format, seeding, prefix property, absent logins never collide, query mix, file round trips, the generator script |
+| `tests/test_experiment.py` | timing helpers, table formatting, and an end-to-end run of `demo.py` |
 
 ## Usage
 

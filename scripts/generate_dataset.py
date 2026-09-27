@@ -76,9 +76,9 @@ def parse_args() -> argparse.Namespace:
     """
     parser = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     parser.add_argument("--n", type=int, default=DEFAULT_N, help="number of stored logins")
-    parser.add_argument("--absent", type=int, default=DEFAULT_ABSENT, help="number of absent logins")
+    parser.add_argument("--absent", type=int, default=DEFAULT_ABSENT, help="number of misses")
     parser.add_argument("--seed", type=int, default=DEFAULT_SEED, help="seed for stored logins")
-    parser.add_argument("--absent-seed", type=int, default=ABSENT_SEED, help="seed for absent logins")
+    parser.add_argument("--absent-seed", type=int, default=ABSENT_SEED, help="seed for misses")
     parser.add_argument("--out-dir", type=Path, default=Path("data"), help="output directory")
     return parser.parse_args()
 
