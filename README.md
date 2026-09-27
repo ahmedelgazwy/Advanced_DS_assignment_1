@@ -33,6 +33,7 @@ only library primitive is the BLAKE2b hash *function* from Python's standard
 │   └── dataset.py          #   synthetic login generator, query mix, file I/O
 ├── scripts/
 │   └── generate_dataset.py # CLI: writes data/*.txt.gz and data/manifest.json
+├── tests/                  # pytest suite (107 tests, about 1 s)
 ├── data/                   # dataset folder (large files downloaded or generated)
 ├── docs/
 │   └── theory.md           # complexity analysis, formulas, references
@@ -60,6 +61,24 @@ pip install -r requirements.txt
 
 No installation of the package itself is needed; every command is run from
 the repository root.
+
+## Running the tests
+
+```bash
+python -m pytest
+```
+
+The suite runs in about a second and needs no dataset files.
+
+| File | What it checks |
+|---|---|
+| `tests/test_common.py` | the contract every structure must satisfy, run once per structure: no false negatives, `register`, special logins (empty, Unicode, 10,000 characters), exact structures never wrong, filters' FP rate near target, filters far smaller than exact structures |
+| `tests/test_binary_search.py` | lower-bound positions, boundaries, sortedness after single and bulk inserts |
+| `tests/test_hash_table.py` | power-of-two capacity, resizing, short chains, duplicates, removal, worst case with every login in one chain |
+| `tests/test_bloom_filter.py` | optimal `m` and `k` against hand-computed values, measured vs. theoretical FP rate, overfilling, memory |
+| `tests/test_cuckoo_filter.py` | `f` formula, table sizing, alternate bucket is an involution, FP bound, removal, full-filter behaviour and victim stash, duplicate limit |
+| `tests/test_hashing.py` | determinism, agreement with BLAKE2b, 64-bit range, even spread |
+| `tests/test_dataset.py` | uniqueness, format, seeding, prefix property, absent logins never collide, query mix, file round trips, the generator script |
 
 ## Usage
 
