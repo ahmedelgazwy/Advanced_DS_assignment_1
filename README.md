@@ -24,6 +24,11 @@ only library primitive is the BLAKE2b hash *function* from Python's standard
 .
 ├── login_checker/          # the library
 │   ├── base.py             #   LoginChecker: interface shared by all five structures
+│   ├── linear_search.py    #   LinearSearchChecker
+│   ├── binary_search.py    #   BinarySearchChecker
+│   ├── hash_table.py       #   HashTable (separate chaining, doubling at load 0.75)
+│   ├── bloom_filter.py     #   BloomFilter (bit array, double hashing)
+│   ├── cuckoo_filter.py    #   CuckooFilter (4-slot buckets, fingerprints, victim stash)
 │   ├── hashing.py          #   BLAKE2b-based hash helpers (hash64, hash_pair, mix64)
 │   └── dataset.py          #   synthetic login generator, query mix, file I/O
 ├── scripts/
@@ -55,6 +60,32 @@ pip install -r requirements.txt
 
 No installation of the package itself is needed; every command is run from
 the repository root.
+
+## Usage
+
+Every structure implements the same `LoginChecker` interface:
+
+```python
+from login_checker import BloomFilter, HashTable
+
+checker = BloomFilter(capacity=1_000_000, fp_rate=0.01)
+checker.register("alice")   # True: the name was free and is now taken
+checker.register("alice")   # False: already taken
+"bob" in checker            # False: definitely free
+
+table = HashTable()         # exact structures also support removal
+table.register("alice")     # True
+table.remove("alice")       # True
+```
+
+| Method | Meaning |
+|---|---|
+| `add(login)` | record a login as taken |
+| `contains(login)` / `login in checker` | is the login (probably) taken? |
+| `register(login)` | check, then add if free; returns whether it succeeded |
+| `add_all(logins)` | bulk load |
+| `memory_bytes()`, `len(checker)` | size information |
+| `remove(login)` | `HashTable` and `CuckooFilter` only (a Bloom filter cannot delete) |
 
 ## Dataset
 
