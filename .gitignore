@@ -7,6 +7,10 @@ __pycache__/
 .venv/
 .pytest_cache/
 
+# Generated datasets (published as a GitHub release, see data/README.md)
+data/*.gz
+data/*.txt
+
 # Editors / OS
 .vscode/
 .idea/

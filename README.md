@@ -24,7 +24,11 @@ only library primitive is the BLAKE2b hash *function* from Python's standard
 .
 ├── login_checker/          # the library
 │   ├── base.py             #   LoginChecker: interface shared by all five structures
-│   └── hashing.py          #   BLAKE2b-based hash helpers (hash64, hash_pair, mix64)
+│   ├── hashing.py          #   BLAKE2b-based hash helpers (hash64, hash_pair, mix64)
+│   └── dataset.py          #   synthetic login generator, query mix, file I/O
+├── scripts/
+│   └── generate_dataset.py # CLI: writes data/*.txt.gz and data/manifest.json
+├── data/                   # dataset folder (large files downloaded or generated)
 ├── docs/
 │   └── theory.md           # complexity analysis, formulas, references
 ├── requirements.txt        # pinned dependencies
@@ -51,6 +55,17 @@ pip install -r requirements.txt
 
 No installation of the package itself is needed; every command is run from
 the repository root.
+
+## Dataset
+
+10 million synthetic, guaranteed-unique logins plus 100,000 guaranteed-absent
+logins for miss queries.
+
+- **Download:** https://github.com/ahmedelgazwy/Advanced_DS_assignment_1/releases/tag/dataset-v1. Put the files in `data/`.
+- **Or regenerate** byte-identical files (about 40 s): `python -m scripts.generate_dataset`
+- **Or a smaller one:** `python -m scripts.generate_dataset --n 100000`
+
+The format and guarantees are described in [data/README.md](data/README.md).
 
 ## Theory
 

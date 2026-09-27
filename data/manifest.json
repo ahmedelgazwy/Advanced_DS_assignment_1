@@ -1,0 +1,23 @@
+{
+  "description": "Synthetic login names for the COSC 520 login checker benchmark",
+  "format": "gzip-compressed UTF-8 text, one login per line",
+  "login_pattern": "4-10 random lowercase letters + 7-char base-36 index",
+  "stored": {
+    "file": "logins_10000000.txt.gz",
+    "count": 10000000,
+    "seed": 42
+  },
+  "absent": {
+    "file": "absent_100000.txt.gz",
+    "count": 100000,
+    "seed": 43
+  },
+  "sha256": {
+    "logins_10000000.txt.gz": "ea54fc32286d4c7525703d8de0b9d40b3d3c5149103272df5fc1309db048cf6f",
+    "absent_100000.txt.gz": "2df8e6cbb59b04f15bb5c11878550535b10374bf602929b31d8b3d6fef98e594"
+  },
+  "bytes": {
+    "logins_10000000.txt.gz": 78277598,
+    "absent_100000.txt.gz": 782660
+  }
+}
