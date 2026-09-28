@@ -40,6 +40,7 @@ only library primitive is the BLAKE2b hash *function* from Python's standard
 ├── results/                # benchmark CSVs, figures/, summary.md (committed)
 ├── tests/                  # pytest suite (114 tests, about 2 s)
 ├── data/                   # dataset folder (large files downloaded or generated)
+├── report/                 # ACM-format LaTeX report (main.tex, references.bib, figures/)
 ├── docs/
 │   └── theory.md           # complexity analysis, formulas, references
 ├── requirements.txt        # pinned dependencies
@@ -213,6 +214,12 @@ logins for miss queries.
 - **Or a smaller one:** `python -m scripts.generate_dataset --n 100000`
 
 The format and guarantees are described in [data/README.md](data/README.md).
+
+## Report
+
+The report is in [report/](report/): `main.tex` in the ACM Small format, with
+its bibliography and figures. [report/README.md](report/README.md) explains how
+to compile it on Overleaf.
 
 ## Theory
 

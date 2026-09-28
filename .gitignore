@@ -14,6 +14,16 @@ data/*.txt
 # Output of the --quick benchmark (the full results are committed)
 results/quick/
 
+# Overleaf upload bundle and LaTeX build files
+*.zip
+report/*.aux
+report/*.bbl
+report/*.blg
+report/*.log
+report/*.out
+report/*.fls
+report/*.fdb_latexmk
+
 # Editors / OS
 .vscode/
 .idea/
