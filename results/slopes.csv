@@ -1,0 +1,11 @@
+structure,metric,loglog_slope,fit_min_n
+Linear search,lookup_us,1.0395,10000
+Linear search,build_s,1.2295,10000
+Binary search,lookup_us,0.2605,10000
+Binary search,build_s,1.2889,10000
+Hash table,lookup_us,0.1057,10000
+Hash table,build_s,1.0821,10000
+Bloom filter,lookup_us,0.0907,10000
+Bloom filter,build_s,1.1036,10000
+Cuckoo filter,lookup_us,0.0781,10000
+Cuckoo filter,build_s,1.0785,10000

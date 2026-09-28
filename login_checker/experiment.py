@@ -81,6 +81,25 @@ def timed_build(
     return checker, elapsed
 
 
+def timed_add_all(checker: LoginChecker, logins: Sequence[str]) -> float:
+    """Bulk-load logins into an existing structure, measuring the time.
+
+    Used to build a filter chunk by chunk when the logins do not fit in
+    memory at once.
+
+    Args:
+        checker: Structure to load.
+        logins: Logins to add.
+
+    Returns:
+        Seconds taken.
+    """
+    with gc_paused():
+        start = time.perf_counter()
+        checker.add_all(logins)
+        return time.perf_counter() - start
+
+
 def mean_lookup_seconds(checker: LoginChecker, queries: Sequence[str]) -> float:
     """Average time of one ``contains`` call over a list of queries.
 

@@ -48,6 +48,12 @@ def test_filters_false_positive_rate_is_near_target(make_filter, logins, absent_
     assert false_positives / len(absent_logins) < 0.03  # target 1%, generous margin
 
 
+def test_exact_checkers_expect_no_false_positives(make_exact_checker, logins):
+    checker = make_exact_checker()
+    checker.add_all(logins)
+    assert checker.expected_fp_rate() == 0.0
+
+
 def test_register_reserves_free_login_once(make_checker):
     checker = make_checker()
     assert checker.register("alice") is True

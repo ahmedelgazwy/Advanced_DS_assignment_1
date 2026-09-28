@@ -1,0 +1,14 @@
+{
+  "date_utc": "2026-09-27T23:28:21+00:00",
+  "cpu": "11th Gen Intel(R) Core(TM) i7-11800H @ 2.30GHz",
+  "logical_cpus": 16,
+  "ram_bytes": 17179869184,
+  "os": "Windows-10-10.0.26200-SP0",
+  "python": "3.10.2",
+  "max_n": 10000000,
+  "stream_max_n": 100000000,
+  "repeats": 3,
+  "query_count": 20000,
+  "linear_budget": 200000000,
+  "fp_rate": 0.01
+}

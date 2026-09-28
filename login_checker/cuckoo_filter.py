@@ -143,7 +143,19 @@ class CuckooFilter(LoginChecker):
         return self._victim is not None
 
     def expected_fp_rate(self) -> float:
-        """Upper bound on the false-positive rate, ``2b / 2^f``.
+        """Expected false-positive rate at the current load.
+
+        A miss compares its fingerprint with the ``2 b alpha`` occupied slots
+        of its two buckets on average, each matching with probability 2^-f.
+
+        Returns:
+            ``1 - (1 - 2^-f) ** (2 b alpha)``.
+        """
+        occupied = 2 * self._bucket_size * self.load_factor
+        return 1.0 - (1.0 - 2.0**-self._fingerprint_bits) ** occupied
+
+    def fp_rate_bound(self) -> float:
+        """Upper bound on the false-positive rate (full buckets), ``2b / 2^f``.
 
         Returns:
             The bound as a probability.

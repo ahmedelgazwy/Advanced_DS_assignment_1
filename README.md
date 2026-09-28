@@ -34,7 +34,10 @@ only library primitive is the BLAKE2b hash *function* from Python's standard
 │   └── experiment.py       #   shared timing helpers and table formatting
 ├── demo.py                 # live comparison of the five structures
 ├── scripts/
-│   └── generate_dataset.py # CLI: writes data/*.txt.gz and data/manifest.json
+│   ├── generate_dataset.py # CLI: writes data/*.txt.gz and data/manifest.json
+│   ├── run_benchmarks.py   # CLI: measures all five structures -> results/*.csv
+│   └── plot_results.py     # CLI: figures, fitted slopes and summary tables
+├── results/                # benchmark CSVs, figures/, summary.md (committed)
 ├── tests/                  # pytest suite (114 tests, about 2 s)
 ├── data/                   # dataset folder (large files downloaded or generated)
 ├── docs/
@@ -101,6 +104,59 @@ Login               Linear search  Binary search  Hash table  Bloom filter  Cuck
 'tasoxbahzi00002j'  free           free           free        taken         free           never registered: Bloom filter false positive
 'zfapi00001r'       free           free           free        free          taken          never registered: Cuckoo filter false positive
 ```
+
+## Benchmarks
+
+```bash
+python -m scripts.run_benchmarks --quick   # setup check: n up to 100k, ~25 s -> results/quick/
+python -m scripts.plot_results --results results/quick
+
+python -m scripts.run_benchmarks           # full run: ~1 hour -> results/
+python -m scripts.plot_results
+```
+
+The benchmark runs three experiments:
+
+| Experiment | Structures | Sizes | Measured |
+|---|---|---|---|
+| Stored | all five | n = 1,000 … 10,000,000 (1-2-5 steps) | median of 3 builds: build time, lookup time for hits and misses, memory, FP rate |
+| Streamed | Bloom, cuckoo | n = 20M, 50M, 100M | the filters never store logins, so logins are generated in 1M chunks and discarded |
+| Trade-off | Bloom, cuckoo | n = 1,000,000, FP targets 0.1% … 10% | bits per login vs. measured FP rate |
+
+Each lookup measurement uses 20,000 queries (half stored logins, half
+never-registered ones). Linear search is capped at 200 million scanned elements
+per measurement, so it gets fewer queries at large n. Timings pause the garbage
+collector, as `timeit` does. Memory is counted with `sys.getsizeof` over every
+container and stored string.
+
+### Results
+
+Full run on an Intel i7-11800H (16 GiB RAM, Windows 11, Python 3.10.2), taking
+59 minutes. The raw data is in [results/benchmark.csv](results/benchmark.csv),
+all tables are in [results/summary.md](results/summary.md), and the figures are
+in [results/figures/](results/figures/) as PNG and PDF.
+
+![Lookup time vs. n](results/figures/lookup_time.png)
+
+| At n = 10,000,000 | Build (s) | Lookup (µs) | Hit / miss (µs) | Bytes per login | FP rate | Lookup slope |
+|---|---|---|---|---|---|---|
+| Linear search | 0.09 | 201,725 | 104,671 / 298,779 | 71.0 | 0 | 1.04 |
+| Binary search | 10.5 | 8.83 | 8.08 / 9.58 | 71.0 | 0 | 0.26 |
+| Hash table | 47.9 | 1.94 | 1.82 / 2.06 | 136.0 | 0 | 0.11 |
+| Bloom filter | 49.4 | 3.18 | 4.09 / 2.27 | 1.2 | 1.04% | 0.09 |
+| Cuckoo filter | 35.8 | 3.30 | 2.46 / 4.14 | 2.2 | 0.73% | 0.08 |
+
+"Lookup slope" is the exponent fitted on log-log axes for n ≥ 10⁴: 1 means
+linear growth and 0 means constant time.
+
+- **Linear search is O(n).** Its slope is 1.04, and one lookup takes 0.2 s at 10 million logins.
+- **Hash table, Bloom and cuckoo lookups are essentially constant.** Their slopes are 0.08–0.11 from 10³ to 10⁷, and the filters stay at 3.4–4.4 µs up to 10⁸. The small positive slope comes from CPU cache misses as the tables grow, not from more work per lookup.
+- **Binary search makes ⌈log₂(n+1)⌉ comparisons**, but each comparison gets 3.7× slower once the data outgrows the 24 MB L3 cache ([figure](results/figures/binary_search_log.png)).
+- **Memory decides what reaches n = 10⁹.** The exact structures need 71–136 bytes per login, i.e. 71–136 GB at 10⁹, far beyond 16 GiB. The Bloom filter needs 1.2 bytes per login (1.2 GB at 10⁹). The cuckoo filter needs 2.2 bytes per login as stored in Python, or about 1.4 GB at 10⁹ with 10-bit packing ([figure](results/figures/memory.png)).
+- **False-positive rates match theory at every size up to 10⁸.** Bloom: 0.95–1.04% against the 1.00% formula. Cuckoo: 0.65–0.75% against 0.70% expected and a 0.78% bound ([figure](results/figures/false_positive_rate.png)).
+- **Hits and misses behave differently in the two filters.** Bloom misses are faster than hits because the lookup stops at the first zero bit. Cuckoo misses are slower than hits because both buckets must be checked.
+
+![Memory vs. n, extrapolated to one billion logins](results/figures/memory.png)
 
 ## Running the tests
 

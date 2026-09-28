@@ -81,8 +81,9 @@ def test_measured_fp_rate_respects_the_bound():
     cuckoo.add_all(generate_logins(5000))
     absent = list(generate_absent_logins(20_000))
     measured = sum(cuckoo.contains(login) for login in absent) / len(absent)
-    # Bound 2b/2^f = 0.78%; the margin absorbs sampling noise of 20k queries.
-    assert measured <= 1.25 * cuckoo.expected_fp_rate()
+    # 20k queries at ~0.7% have a standard deviation of about 0.06%
+    assert measured == pytest.approx(cuckoo.expected_fp_rate(), abs=0.003)
+    assert measured <= 1.25 * cuckoo.fp_rate_bound()  # 2b/2^f = 0.78%, plus sampling margin
 
 
 def test_remove(logins):
@@ -135,4 +136,8 @@ def test_load_factor_counts_stored_logins(logins):
     cuckoo = CuckooFilter(capacity=len(logins), max_load=0.9)
     cuckoo.add_all(logins)
     assert cuckoo.load_factor == pytest.approx(0.9, abs=0.01)
-    assert cuckoo.expected_fp_rate() == 2 * 4 / 2**10
+    assert cuckoo.fp_rate_bound() == 2 * 4 / 2**10
+    # expected rate at load alpha: 1 - (1 - 2^-f)^(2 b alpha), below the bound
+    expected = 1 - (1 - 2**-10) ** (2 * 4 * cuckoo.load_factor)
+    assert cuckoo.expected_fp_rate() == pytest.approx(expected)
+    assert cuckoo.expected_fp_rate() < cuckoo.fp_rate_bound()

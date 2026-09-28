@@ -11,6 +11,9 @@ __pycache__/
 data/*.gz
 data/*.txt
 
+# Output of the --quick benchmark (the full results are committed)
+results/quick/
+
 # Editors / OS
 .vscode/
 .idea/

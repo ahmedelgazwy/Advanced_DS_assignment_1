@@ -198,6 +198,15 @@ $$
 For $\varepsilon = 1\%$ and $b = 4$: $f = \lceil 9.64 \rceil = 10$ bits, which
 gives an upper bound of $8/1024 = 0.78\%$.
 
+The bound assumes both buckets are full. At load factor $\alpha$, a lookup meets
+$2b\alpha$ occupied slots on average, so the **expected** rate is
+
+$$
+\varepsilon(\alpha) \approx 1 - \left(1 - 2^{-f}\right)^{2b\alpha} \approx \frac{2b\alpha}{2^f},
+$$
+
+which is $0.70\%$ at $\alpha = 0.9$.
+
 ### 5.2 Space
 With load factor $\alpha$ (the fraction of occupied slots), the cost per login is
 

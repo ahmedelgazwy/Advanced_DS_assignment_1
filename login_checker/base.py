@@ -68,6 +68,14 @@ class LoginChecker(ABC):
     def __len__(self) -> int:
         """Return the number of logins added so far."""
 
+    def expected_fp_rate(self) -> float:
+        """Theoretical false-positive rate at the current number of logins.
+
+        Returns:
+            0.0 for exact structures; filters override this with their formula.
+        """
+        return 0.0
+
     def __contains__(self, login: object) -> bool:
         """Support the ``login in checker`` syntax.
 

@@ -1,0 +1,98 @@
+Loaded 10,000,000 logins from data\logins_10000000.txt.gz
+Loaded 100,000 logins from data\absent_100000.txt.gz
+
+1. Stored experiment (all five structures)
+  n=      1,000  Linear search  build    0.000s  lookup        14.53us  [     4s]
+  n=      1,000  Binary search  build    0.000s  lookup         1.11us  [     4s]
+  n=      1,000  Hash table     build    0.003s  lookup         0.90us  [     4s]
+  n=      1,000  Bloom filter   build    0.003s  lookup         1.97us  [     5s]
+  n=      1,000  Cuckoo filter  build    0.003s  lookup         1.87us  [     5s]
+  n=      2,000  Linear search  build    0.000s  lookup        29.48us  [     7s]
+  n=      2,000  Binary search  build    0.000s  lookup         1.11us  [     7s]
+  n=      2,000  Hash table     build    0.005s  lookup         0.89us  [     7s]
+  n=      2,000  Bloom filter   build    0.005s  lookup         2.02us  [     7s]
+  n=      2,000  Cuckoo filter  build    0.005s  lookup         2.01us  [     8s]
+  n=      5,000  Linear search  build    0.000s  lookup        74.80us  [    12s]
+  n=      5,000  Binary search  build    0.001s  lookup         1.35us  [    12s]
+  n=      5,000  Hash table     build    0.013s  lookup         1.03us  [    12s]
+  n=      5,000  Bloom filter   build    0.013s  lookup         2.03us  [    13s]
+  n=      5,000  Cuckoo filter  build    0.012s  lookup         1.97us  [    13s]
+  n=     10,000  Linear search  build    0.000s  lookup       150.38us  [    22s]
+  n=     10,000  Binary search  build    0.001s  lookup         1.40us  [    22s]
+  n=     10,000  Hash table     build    0.022s  lookup         0.88us  [    22s]
+  n=     10,000  Bloom filter   build    0.027s  lookup         2.07us  [    23s]
+  n=     10,000  Cuckoo filter  build    0.023s  lookup         2.01us  [    23s]
+  n=     20,000  Linear search  build    0.000s  lookup       297.95us  [    32s]
+  n=     20,000  Binary search  build    0.003s  lookup         1.43us  [    32s]
+  n=     20,000  Hash table     build    0.048s  lookup         0.94us  [    32s]
+  n=     20,000  Bloom filter   build    0.055s  lookup         2.10us  [    33s]
+  n=     20,000  Cuckoo filter  build    0.044s  lookup         2.00us  [    33s]
+  n=     50,000  Linear search  build    0.000s  lookup       771.32us  [    43s]
+  n=     50,000  Binary search  build    0.009s  lookup         1.72us  [    43s]
+  n=     50,000  Hash table     build    0.160s  lookup         0.94us  [    43s]
+  n=     50,000  Bloom filter   build    0.144s  lookup         2.08us  [    44s]
+  n=     50,000  Cuckoo filter  build    0.114s  lookup         2.04us  [    45s]
+  n=    100,000  Linear search  build    0.000s  lookup     1,546.21us  [    54s]
+  n=    100,000  Binary search  build    0.020s  lookup         1.91us  [    54s]
+  n=    100,000  Hash table     build    0.355s  lookup         1.17us  [    55s]
+  n=    100,000  Bloom filter   build    0.273s  lookup         2.33us  [    57s]
+  n=    100,000  Cuckoo filter  build    0.225s  lookup         2.05us  [    58s]
+  n=    200,000  Linear search  build    0.001s  lookup     3,262.99us  [    67s]
+  n=    200,000  Binary search  build    0.056s  lookup         2.51us  [    68s]
+  n=    200,000  Hash table     build    0.760s  lookup         1.22us  [    70s]
+  n=    200,000  Bloom filter   build    0.539s  lookup         2.19us  [    72s]
+  n=    200,000  Cuckoo filter  build    0.447s  lookup         2.14us  [    74s]
+  n=    500,000  Linear search  build    0.005s  lookup     8,308.61us  [    84s]
+  n=    500,000  Binary search  build    0.199s  lookup         3.16us  [    85s]
+  n=    500,000  Hash table     build    1.772s  lookup         1.34us  [    91s]
+  n=    500,000  Bloom filter   build    1.486s  lookup         2.32us  [    96s]
+  n=    500,000  Cuckoo filter  build    1.237s  lookup         2.19us  [   100s]
+  n=  1,000,000  Linear search  build    0.011s  lookup    17,382.29us  [   111s]
+  n=  1,000,000  Binary search  build    0.439s  lookup         3.75us  [   113s]
+  n=  1,000,000  Hash table     build    3.602s  lookup         1.32us  [   125s]
+  n=  1,000,000  Bloom filter   build    3.192s  lookup         2.38us  [   135s]
+  n=  1,000,000  Cuckoo filter  build    2.479s  lookup         2.33us  [   143s]
+  n=  2,000,000  Linear search  build    0.020s  lookup    33,408.57us  [   154s]
+  n=  2,000,000  Binary search  build    1.031s  lookup         4.20us  [   158s]
+  n=  2,000,000  Hash table     build    8.097s  lookup         1.61us  [   185s]
+  n=  2,000,000  Bloom filter   build    7.213s  lookup         2.47us  [   207s]
+  n=  2,000,000  Cuckoo filter  build    5.267s  lookup         2.44us  [   223s]
+  n=  5,000,000  Linear search  build    0.047s  lookup    93,564.32us  [   235s]
+  n=  5,000,000  Binary search  build    3.155s  lookup         5.80us  [   247s]
+  n=  5,000,000  Hash table     build   17.056s  lookup         1.50us  [   306s]
+  n=  5,000,000  Bloom filter   build   17.858s  lookup         2.86us  [   361s]
+  n=  5,000,000  Cuckoo filter  build   14.059s  lookup         2.53us  [   403s]
+  n= 10,000,000  Linear search  build    0.091s  lookup   201,724.90us  [   418s]
+  n= 10,000,000  Binary search  build   10.511s  lookup         8.83us  [   459s]
+  n= 10,000,000  Hash table     build   47.851s  lookup         1.94us  [   623s]
+  n= 10,000,000  Bloom filter   build   49.376s  lookup         3.18us  [   770s]
+  n= 10,000,000  Cuckoo filter  build   35.780s  lookup         3.30us  [   879s]
+
+2. Streamed experiment (filters only)
+    streamed 10,000,000 / 20,000,000
+    streamed 20,000,000 / 20,000,000
+  n= 20,000,000  Bloom filter   build     97.3s  lookup     3.91us  [  1117s]
+  n= 20,000,000  Cuckoo filter  build     68.9s  lookup     3.54us  [  1117s]
+    streamed 10,000,000 / 50,000,000
+    streamed 20,000,000 / 50,000,000
+    streamed 30,000,000 / 50,000,000
+    streamed 40,000,000 / 50,000,000
+    streamed 50,000,000 / 50,000,000
+  n= 50,000,000  Bloom filter   build    310.5s  lookup     4.78us  [  1860s]
+  n= 50,000,000  Cuckoo filter  build    216.5s  lookup     4.19us  [  1860s]
+    streamed 10,000,000 / 100,000,000
+    streamed 20,000,000 / 100,000,000
+    streamed 30,000,000 / 100,000,000
+    streamed 40,000,000 / 100,000,000
+    streamed 50,000,000 / 100,000,000
+    streamed 60,000,000 / 100,000,000
+    streamed 70,000,000 / 100,000,000
+    streamed 80,000,000 / 100,000,000
+    streamed 90,000,000 / 100,000,000
+    streamed 100,000,000 / 100,000,000
+  n=100,000,000  Bloom filter   build    713.2s  lookup     4.40us  [  3481s]
+  n=100,000,000  Cuckoo filter  build    455.4s  lookup     3.40us  [  3481s]
+
+3. Trade-off experiment (n = 1,000,000)
+
+Done in 3546s; results in results/
