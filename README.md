@@ -18,6 +18,24 @@ All five are implemented by hand. No library data structures are used: no
 only library primitive is the BLAKE2b hash *function* from Python's standard
 `hashlib`.
 
+## Quick start
+
+```bash
+git clone https://github.com/ahmedelgazwy/Advanced_DS_assignment_1.git
+cd Advanced_DS_assignment_1
+python -m venv .venv                     # Windows: py -3.10 -m venv .venv
+source .venv/bin/activate                # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+
+python -m pytest                         # 121 tests, about 15 s
+python demo.py                           # live comparison, about 2 s
+python -m scripts.run_benchmarks --quick # small benchmark, about 25 s
+python -m scripts.plot_results --results results/quick
+```
+
+No dataset download is needed for any of these: missing data is generated in
+memory. If something fails, see [Troubleshooting](#troubleshooting).
+
 ## Repository layout
 
 ```
@@ -38,7 +56,7 @@ only library primitive is the BLAKE2b hash *function* from Python's standard
 │   ├── run_benchmarks.py   # CLI: measures all five structures -> results/*.csv
 │   └── plot_results.py     # CLI: figures, fitted slopes and summary tables
 ├── results/                # benchmark CSVs, figures/, summary.md (committed)
-├── tests/                  # pytest suite (114 tests, about 2 s)
+├── tests/                  # pytest suite (121 tests, about 15 s)
 ├── data/                   # dataset folder (large files downloaded or generated)
 ├── report/                 # ACM-format LaTeX report (main.tex, references.bib, figures/)
 ├── docs/
@@ -54,7 +72,7 @@ Requires **Python 3.10 or newer**. Run the commands from the repository root.
 **Windows (PowerShell)**
 ```powershell
 py -3.10 -m venv .venv
-.venv\Scripts\Activate.ps1
+.venv\Scripts\Activate.ps1      # cmd.exe: .venv\Scripts\activate.bat
 pip install -r requirements.txt
 ```
 
@@ -67,6 +85,26 @@ pip install -r requirements.txt
 
 No installation of the package itself is needed; every command is run from
 the repository root.
+
+## Running the tests
+
+```bash
+python -m pytest
+```
+
+The suite runs in about 15 seconds and needs no dataset files.
+
+| File | What it checks |
+|---|---|
+| `tests/test_common.py` | the contract every structure must satisfy, run once per structure: no false negatives, `register`, special logins (empty, Unicode, 10,000 characters), exact structures never wrong, filters' FP rate near target, filters far smaller than exact structures |
+| `tests/test_binary_search.py` | lower-bound positions, boundaries, sortedness after single and bulk inserts |
+| `tests/test_hash_table.py` | power-of-two capacity, resizing, short chains, duplicates, removal, worst case with every login in one chain |
+| `tests/test_bloom_filter.py` | optimal `m` and `k` against hand-computed values, measured vs. theoretical FP rate, overfilling, memory |
+| `tests/test_cuckoo_filter.py` | `f` formula, table sizing, alternate bucket is an involution, FP bound, removal, full-filter behaviour and victim stash, duplicate limit |
+| `tests/test_hashing.py` | determinism, agreement with BLAKE2b, 64-bit range, even spread |
+| `tests/test_dataset.py` | uniqueness, format, seeding, prefix property, absent logins never collide, query mix, file round trips, the generator script |
+| `tests/test_experiment.py` | timing helpers, table formatting, and an end-to-end run of `demo.py` |
+| `tests/test_scripts.py` | size ladder, slope fitting, byte formatting, and a tiny end-to-end run of the benchmark and plotting scripts |
 
 ## Demo
 
@@ -152,31 +190,12 @@ linear growth and 0 means constant time.
 
 - **Linear search is O(n).** Its slope is 1.04, and one lookup takes 0.2 s at 10 million logins.
 - **Hash table, Bloom and cuckoo lookups are essentially constant.** Their slopes are 0.08–0.11 from 10³ to 10⁷, and the filters stay at 3.4–4.4 µs up to 10⁸. The small positive slope comes from CPU cache misses as the tables grow, not from more work per lookup.
-- **Binary search makes ⌈log₂(n+1)⌉ comparisons**, but each comparison gets 3.7× slower once the data outgrows the 24 MB L3 cache ([figure](results/figures/binary_search_log.png)).
+- **Binary search makes at most ⌈log₂(n+1)⌉ comparisons**, but each comparison gets 3.7× slower once the data outgrows the 24 MB L3 cache ([figure](results/figures/binary_search_log.png)).
 - **Memory decides what reaches n = 10⁹.** The exact structures need 71–136 bytes per login, i.e. 71–136 GB at 10⁹, far beyond 16 GiB. The Bloom filter needs 1.2 bytes per login (1.2 GB at 10⁹). The cuckoo filter needs 2.2 bytes per login as stored in Python, or about 1.4 GB at 10⁹ with 10-bit packing ([figure](results/figures/memory.png)).
 - **False-positive rates match theory at every size up to 10⁸.** Bloom: 0.95–1.04% against the 1.00% formula. Cuckoo: 0.65–0.75% against 0.70% expected and a 0.78% bound ([figure](results/figures/false_positive_rate.png)).
 - **Hits and misses behave differently in the two filters.** Bloom misses are faster than hits because the lookup stops at the first zero bit. Cuckoo misses are slower than hits because both buckets must be checked.
 
 ![Memory vs. n, extrapolated to one billion logins](results/figures/memory.png)
-
-## Running the tests
-
-```bash
-python -m pytest
-```
-
-The suite runs in about two seconds and needs no dataset files.
-
-| File | What it checks |
-|---|---|
-| `tests/test_common.py` | the contract every structure must satisfy, run once per structure: no false negatives, `register`, special logins (empty, Unicode, 10,000 characters), exact structures never wrong, filters' FP rate near target, filters far smaller than exact structures |
-| `tests/test_binary_search.py` | lower-bound positions, boundaries, sortedness after single and bulk inserts |
-| `tests/test_hash_table.py` | power-of-two capacity, resizing, short chains, duplicates, removal, worst case with every login in one chain |
-| `tests/test_bloom_filter.py` | optimal `m` and `k` against hand-computed values, measured vs. theoretical FP rate, overfilling, memory |
-| `tests/test_cuckoo_filter.py` | `f` formula, table sizing, alternate bucket is an involution, FP bound, removal, full-filter behaviour and victim stash, duplicate limit |
-| `tests/test_hashing.py` | determinism, agreement with BLAKE2b, 64-bit range, even spread |
-| `tests/test_dataset.py` | uniqueness, format, seeding, prefix property, absent logins never collide, query mix, file round trips, the generator script |
-| `tests/test_experiment.py` | timing helpers, table formatting, and an end-to-end run of `demo.py` |
 
 ## Usage
 
@@ -235,3 +254,12 @@ assistant helped draft the plan and generated the code, tests and
 documentation. The author directed the work phase by phase and reviewed each
 phase before the next one started. Every file produced with AI assistance
 carries the line `AI-assisted: generated with Claude Code` in its header.
+
+## Troubleshooting
+
+| Problem | Fix |
+|---|---|
+| `Activate.ps1 cannot be loaded because running scripts is disabled` (PowerShell) | Run `Set-ExecutionPolicy -Scope Process Bypass` first, or skip activation and call `.venv\Scripts\python.exe` directly, e.g. `.venv\Scripts\python.exe -m pytest`. |
+| `venv` fails with an `ensurepip ... returned non-zero exit status 1` error on Windows | The folder path is probably too long: Windows limits paths to 260 characters and pip's files are deeply nested. Clone into a short folder such as `C:\src`, or [enable long paths](https://learn.microsoft.com/windows/win32/fileio/maximum-file-path-limitation). Anaconda's Python can fail the same way; use a python.org installation (`py -3.10`) instead. |
+| `ModuleNotFoundError: No module named 'login_checker'` | Run every command from the repository root, and run scripts as modules: `python -m scripts.run_benchmarks`, not `python scripts/run_benchmarks.py`. |
+| `python` starts the wrong version | Check with `python --version`; Python 3.10 or newer is required. |

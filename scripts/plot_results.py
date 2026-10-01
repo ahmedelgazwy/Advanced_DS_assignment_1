@@ -163,13 +163,25 @@ def guide_line(ax, n: np.ndarray, anchor_n: float, anchor_value: float, text: st
 
 
 def streamed_legend_entry() -> Line2D:
-    """Legend handle explaining the hollow streamed markers."""
+    """Legend entry explaining the hollow markers of the streamed runs.
+
+    Returns:
+        A line-and-marker handle labelled "streamed (filters only)".
+    """
     return Line2D([], [], color=INK_SECONDARY, linestyle="--", marker="o",
                   markerfacecolor="white", label="streamed (filters only)")
 
 
 def plot_lookup(rows, slopes: dict) -> plt.Figure:
-    """Average lookup time vs. n for all five structures (log-log)."""
+    """Average lookup time vs. n for all five structures (log-log).
+
+    Args:
+        rows: ``benchmark.csv`` rows.
+        slopes: Output of :func:`fitted_slopes`, shown in the legend.
+
+    Returns:
+        The figure.
+    """
     fig, ax = plt.subplots()
     for name in STYLES:
         plot_series(ax, rows, name, "lookup_us", f"{name} (slope {slopes[name, 'lookup_us']:.2f})")
@@ -183,7 +195,15 @@ def plot_lookup(rows, slopes: dict) -> plt.Figure:
 
 
 def plot_build(rows, slopes: dict) -> plt.Figure:
-    """Build time vs. n for all five structures (log-log)."""
+    """Build time vs. n for all five structures (log-log).
+
+    Args:
+        rows: ``benchmark.csv`` rows.
+        slopes: Output of :func:`fitted_slopes`, shown in the legend.
+
+    Returns:
+        The figure.
+    """
     fig, ax = plt.subplots()
     for name in STYLES:
         plot_series(ax, rows, name, "build_s", f"{name} (slope {slopes[name, 'build_s']:.2f})")
@@ -212,7 +232,16 @@ def format_bytes(value: float, _position=None) -> str:
 
 
 def plot_memory(rows, ram_bytes: int | None) -> plt.Figure:
-    """Total memory vs. n, extrapolated to one billion logins."""
+    """Total memory vs. n, extrapolated to one billion logins.
+
+    Args:
+        rows: ``benchmark.csv`` rows.
+        ram_bytes: RAM of the test machine, drawn as a reference line; None
+            to omit it.
+
+    Returns:
+        The figure.
+    """
     fig, ax = plt.subplots()
     endpoints: dict[str, float] = {}
     for name in STYLES:
@@ -243,7 +272,14 @@ def plot_memory(rows, ram_bytes: int | None) -> plt.Figure:
 
 
 def plot_fp_rate(rows) -> plt.Figure:
-    """Measured vs. theoretical false-positive rate of both filters across n."""
+    """Measured vs. theoretical false-positive rate of both filters across n.
+
+    Args:
+        rows: ``benchmark.csv`` rows.
+
+    Returns:
+        The figure.
+    """
     fig, ax = plt.subplots()
     theory_labels = {"Bloom filter": "theory (1 − e^(−kn/m))^k",
                      "Cuckoo filter": "expected 1 − (1 − 2^(−f))^(2bα)"}
@@ -269,7 +305,7 @@ def plot_fp_rate(rows) -> plt.Figure:
 def plot_binary_log(rows, cache_mb: float) -> plt.Figure:
     """Binary search: time vs. log2(n), and time per comparison vs. n.
 
-    The algorithm makes ceil(log2(n + 1)) comparisons, so lookup time is a
+    The algorithm makes at most ceil(log2(n + 1)) comparisons, so lookup time is a
     straight line in log2(n) while the data fits in the CPU cache. Beyond
     that, each comparison waits for main memory and the line bends upward.
 
@@ -311,7 +347,14 @@ def plot_binary_log(rows, cache_mb: float) -> plt.Figure:
 
 
 def plot_tradeoff(tradeoff) -> plt.Figure:
-    """Space vs. accuracy: bits per login against measured false-positive rate."""
+    """Space vs. accuracy: bits per login against measured false-positive rate.
+
+    Args:
+        tradeoff: ``tradeoff.csv`` rows.
+
+    Returns:
+        The figure.
+    """
     fig, ax = plt.subplots()
     bits = np.linspace(3, 20, 100)
     ax.plot(bits, 2.0**-bits, color=AXIS, linewidth=1.2, label="lower bound: ε = 2^(−bits)")
