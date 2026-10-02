@@ -236,9 +236,11 @@ The format and guarantees are described in [data/README.md](data/README.md).
 
 ## Report
 
-The report is in [report/](report/): `main.tex` in the ACM Small format, with
-its bibliography and figures. [report/README.md](report/README.md) explains how
-to compile it on Overleaf.
+**Read the report: [report/report.pdf](report/report.pdf)** (9 pages, ACM Small format).
+
+Its LaTeX source is in [report/](report/): `main.tex`, the bibliography and the
+figures. [report/README.md](report/README.md) explains how to compile it on
+Overleaf.
 
 ## Theory
 

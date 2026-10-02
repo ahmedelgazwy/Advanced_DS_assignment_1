@@ -5,7 +5,8 @@ The assignment report in the ACM Small format (`acmart` class with the
 
 | File | Contents |
 |---|---|
-| `main.tex` | the report |
+| `report.pdf` | the compiled report |
+| `main.tex` | the report source |
 | `references.bib` | bibliography (ACM reference format) |
 | `figures/*.pdf` | copies of `results/figures/*.pdf`, produced by `python -m scripts.plot_results` |
 
